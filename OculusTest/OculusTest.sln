@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
+# Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OculusTest.Plugins", "OculusTest.Plugins.csproj", "{ED104EC0-3776-E527-D192-30A81FD738A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OculusTest", "OculusTest.csproj", "{03CF48DE-BA52-2CB5-86D5-0EB17C58C882}"

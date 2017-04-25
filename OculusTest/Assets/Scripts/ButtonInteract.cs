@@ -6,8 +6,6 @@ public class ButtonInteract : MonoBehaviour {
 	private Vector3 startPosition;
 	private Vector3 initialPosition;
 	private Vector3 endPosition;
-    private Vector3 testPosition;
-
     private float t, s;
 
 	private bool hasTouched;
@@ -25,25 +23,34 @@ public class ButtonInteract : MonoBehaviour {
     //script that enables haptic feedback
     public OculusHapticsController OHCscript;
 
-	public void OnTriggerEnter(Collider hand){
-		if(hand.name.Contains("hand")) hasTouched = true;
-        if (hand.name.Contains("hands:b_l")) leftHasTouched = true;
-        else if (hand.name.Contains("hands:b_r")) rightHasTouched = true;
+    //Switch used to trigger an action when button collides with it
+    public GameObject switchButton;
+    public bool switchTrigger; //if button collided with switch, then switchTrigger is true
+
+    public void OnTriggerEnter(Collider col){
+        //Checking collisions with hands
+        if (col.name.Contains("hand")) hasTouched = true;
+        if (col.name.Contains("hands:b_l")) leftHasTouched = true;
+        else if (col.name.Contains("hands:b_r")) rightHasTouched = true;
+
+        //Checking collision with switch
+        if (col.name.Contains("Switch")) switchTrigger = true;
 	}
 
-    public void OnTriggerExit(Collider hand)
+    public void OnTriggerExit(Collider col)
     {
-        if (hand.name.Contains("hands:b_l")) leftHasTouched = false;
-        else if (hand.name.Contains("hands:b_r")) rightHasTouched = false;
+        //Checking collisions with hands
+        if (col.name.Contains("hands:b_l")) leftHasTouched = false;
+        else if (col.name.Contains("hands:b_r")) rightHasTouched = false;
         if (!(leftHasTouched && rightHasTouched)) hasTouched = false;
+
+        //Checking collision with switch
+        if (col.name.Contains("Switch")) switchTrigger = false;
     }
-	// Use this for initialization
-	void Start () {
-		hasTouched = leftHasTouched = rightHasTouched = false;
+    // Use this for initialization
+    void Start () {
+		hasTouched = leftHasTouched = rightHasTouched = switchTrigger = false;
 		initialPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
-        Debug.Log("initial:"+initialPosition);
-        testPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
-        Debug.Log("test: " + testPosition);
         endPosition = new Vector3(transform.localPosition.x, transform.localPosition.y-distance, transform.localPosition.z);
 		startPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
 	}
