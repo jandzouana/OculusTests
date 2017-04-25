@@ -6,7 +6,9 @@ public class ButtonInteract : MonoBehaviour {
 	private Vector3 startPosition;
 	private Vector3 initialPosition;
 	private Vector3 endPosition;
-	private float t, s;
+    private Vector3 testPosition;
+
+    private float t, s;
 
 	private bool hasTouched;
     private bool leftHasTouched;
@@ -38,9 +40,12 @@ public class ButtonInteract : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		hasTouched = leftHasTouched = rightHasTouched = false;
-		initialPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-		endPosition = new Vector3(transform.position.x, transform.position.y-distance, transform.position.z);
-		startPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+		initialPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
+        Debug.Log("initial:"+initialPosition);
+        testPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
+        Debug.Log("test: " + testPosition);
+        endPosition = new Vector3(transform.localPosition.x, transform.localPosition.y-distance, transform.localPosition.z);
+		startPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
 	}
 	
 	// Update is called once per frame
@@ -51,14 +56,14 @@ public class ButtonInteract : MonoBehaviour {
         if (hasTouched){
             s = 0;
 			t+=Time.deltaTime/timeLower;
-			transform.position = Vector3.Lerp(startPosition, endPosition, t);
+			transform.localPosition = Vector3.Lerp(startPosition, endPosition, t);
 		}
 		//If the player is no longer touching the button, reset button to original position
 		else{
 			t=0;
 			s+=Time.deltaTime/timeUpper;
-			startPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-			transform.position = Vector3.Lerp(startPosition, initialPosition, s);
+			startPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
+            transform.localPosition = Vector3.Lerp(startPosition, initialPosition, s);
 		}
 	}
 }
