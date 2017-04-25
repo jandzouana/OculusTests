@@ -7,6 +7,7 @@ public class OculusHapticsController : MonoBehaviour
 
 	public enum VibrationForce
 	{
+        Slight,
 		Light,
 		Medium,
 		Hard,
@@ -14,7 +15,8 @@ public class OculusHapticsController : MonoBehaviour
 	[SerializeField]
 	OVRInput.Controller controllerMask;
 
-	private OVRHapticsClip clipLight;
+    private OVRHapticsClip clipSlight;
+    private OVRHapticsClip clipLight;
 	private OVRHapticsClip clipMedium;
 	private OVRHapticsClip clipHard;
 
@@ -26,17 +28,20 @@ public class OculusHapticsController : MonoBehaviour
 	private void InitializeOVRHaptics()
 	{
 		int cnt = 10;
-		clipLight = new OVRHapticsClip(cnt);
+        clipSlight = new OVRHapticsClip(cnt);
+        clipLight = new OVRHapticsClip(cnt);
 		clipMedium = new OVRHapticsClip(cnt);
 		clipHard = new OVRHapticsClip(cnt);
 		for (int i = 0; i < cnt; i++)
 		{
-			clipLight.Samples[i] = i % 2 == 0 ? (byte)0 : (byte)75;
+            clipSlight.Samples[i] = i % 2 == 0 ? (byte)0 : (byte)35;
+            clipLight.Samples[i] = i % 2 == 0 ? (byte)0 : (byte)75;
 			clipMedium.Samples[i] = i % 2 == 0 ? (byte)0 : (byte)150;
 			clipHard.Samples[i] = i % 2 == 0 ? (byte)0 : (byte)255;
 		}
 
-		clipLight = new OVRHapticsClip(clipLight.Samples, clipLight.Samples.Length);
+        clipSlight = new OVRHapticsClip(clipSlight.Samples, clipSlight.Samples.Length);
+        clipLight = new OVRHapticsClip(clipLight.Samples, clipLight.Samples.Length);
 		clipMedium = new OVRHapticsClip(clipMedium.Samples, clipMedium.Samples.Length);
 		clipHard = new OVRHapticsClip(clipHard.Samples, clipHard.Samples.Length);
 	}
@@ -49,7 +54,10 @@ public class OculusHapticsController : MonoBehaviour
 
 		switch (vibrationForce)
 		{
-			case VibrationForce.Light:
+            case VibrationForce.Slight:
+                channel.Preempt(clipSlight);
+                break;
+            case VibrationForce.Light:
 				channel.Preempt(clipLight);
 				break;
 			case VibrationForce.Medium:
@@ -60,19 +68,60 @@ public class OculusHapticsController : MonoBehaviour
 				break;
 		}
 	}
-	[SerializeField]
+
+
+    [SerializeField]
 	OculusHapticsController leftControllerHaptics;
 
 	[SerializeField]
-	//OculusHapticsController rightControllerHaptics;
-	
-	private void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			leftControllerHaptics.Vibrate(VibrationForce.Hard);
-			Debug.Log("presed");
-			//rightControllerHaptics.Vibrate(VibrationForce.Light);
-		}
-	}
+	OculusHapticsController rightControllerHaptics;
+
+    //Creates a haptic feedback to one controller ranging from force 0-3 (Slight to Hard)
+    //To be used in other scripts
+    public void SimpleVibrate(string controller, int force)
+    {
+        if (controller == "left")
+        {
+            switch (force)
+            {
+                case 0:
+                    leftControllerHaptics.Vibrate(VibrationForce.Slight);
+                    break;
+                case 1:
+                    leftControllerHaptics.Vibrate(VibrationForce.Light);
+                    break;
+                case 2:
+                    leftControllerHaptics.Vibrate(VibrationForce.Medium);
+                    break;
+                case 3:
+                    leftControllerHaptics.Vibrate(VibrationForce.Hard);
+                    break;
+                default:
+                    leftControllerHaptics.Vibrate(VibrationForce.Slight);
+                    break;
+            }
+        }
+        if (controller == "right")
+        {
+            switch (force)
+            {
+                case 0:
+                    rightControllerHaptics.Vibrate(VibrationForce.Slight);
+                    break;
+                case 1:
+                    rightControllerHaptics.Vibrate(VibrationForce.Light);
+                    break;
+                case 2:
+                    rightControllerHaptics.Vibrate(VibrationForce.Medium);
+                    break;
+                case 3:
+                    rightControllerHaptics.Vibrate(VibrationForce.Hard);
+                    break;
+                default:
+                    rightControllerHaptics.Vibrate(VibrationForce.Slight);
+                    break;
+            }
+        }
+    }
+
 }

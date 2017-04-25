@@ -9,6 +9,10 @@ public class ButtonInteract : MonoBehaviour {
 	private float t, s;
 
 	private bool hasTouched;
+    private bool leftHasTouched;
+    private bool rightHasTouched;
+
+    //specify how fast the button lowers and bounces back to the origial position
 	public float timeLower;
 	public float timeUpper;
 	//specify how far you can push the button
@@ -16,20 +20,24 @@ public class ButtonInteract : MonoBehaviour {
 	//how far you need to push the button to trigger an action
 	public float distanceTrigger;
 
+    //script that enables haptic feedback
+    public OculusHapticsController OHCscript;
 
 	public void OnTriggerEnter(Collider hand){
-		if(hand.name.Contains("hand")){
-			hasTouched = true;
-		}
+		if(hand.name.Contains("hand")) hasTouched = true;
+        if (hand.name.Contains("hands:b_l")) leftHasTouched = true;
+        else if (hand.name.Contains("hands:b_r")) rightHasTouched = true;
 	}
-	public void OnTriggerExit(Collider hand){
-			if(hand.name.Contains("hand")){
-			hasTouched = false;
-		}
-	}
+
+    public void OnTriggerExit(Collider hand)
+    {
+        if (hand.name.Contains("hands:b_l")) leftHasTouched = false;
+        else if (hand.name.Contains("hands:b_r")) rightHasTouched = false;
+        if (!(leftHasTouched && rightHasTouched)) hasTouched = false;
+    }
 	// Use this for initialization
 	void Start () {
-		hasTouched = false;
+		hasTouched = leftHasTouched = rightHasTouched = false;
 		initialPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		endPosition = new Vector3(transform.position.x, transform.position.y-distance, transform.position.z);
 		startPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
@@ -37,9 +45,11 @@ public class ButtonInteract : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//If the player's hand/finger has collided, then lower button in timeLower time
-		if(hasTouched){
-			s=0;
+        if (leftHasTouched) OHCscript.SimpleVibrate("left", 0);
+        if (rightHasTouched) OHCscript.SimpleVibrate("right", 0);
+        //If the player's hand/finger has collided, then lower button in timeLower time
+        if (hasTouched){
+            s = 0;
 			t+=Time.deltaTime/timeLower;
 			transform.position = Vector3.Lerp(startPosition, endPosition, t);
 		}
