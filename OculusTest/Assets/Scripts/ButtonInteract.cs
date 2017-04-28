@@ -12,6 +12,7 @@ public class ButtonInteract : MonoBehaviour {
     private bool leftHasTouched;
     private bool rightHasTouched;
 
+    public bool on;
     //specify how fast the button lowers and bounces back to the origial position
 	public float timeLower;
 	public float timeUpper;
@@ -34,7 +35,11 @@ public class ButtonInteract : MonoBehaviour {
         else if (col.name.Contains("hands:b_r")) rightHasTouched = true;
 
         //Checking collision with switch
-        if (col.name.Contains("Switch")) switchTrigger = true;
+        if (col.name.Contains("Switch"))
+        {
+            switchTrigger = true;
+            on = !on;
+        }
 	}
 
     public void OnTriggerExit(Collider col)
@@ -45,11 +50,14 @@ public class ButtonInteract : MonoBehaviour {
         if (!(leftHasTouched && rightHasTouched)) hasTouched = false;
 
         //Checking collision with switch
-        if (col.name.Contains("Switch")) switchTrigger = false;
+        if (col.name.Contains("Switch"))
+        {
+            switchTrigger = false;
+        }
     }
     // Use this for initialization
     void Start () {
-		hasTouched = leftHasTouched = rightHasTouched = switchTrigger = false;
+		hasTouched = leftHasTouched = rightHasTouched = switchTrigger = on = false;
 		initialPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
         endPosition = new Vector3(transform.localPosition.x, transform.localPosition.y-distance, transform.localPosition.z);
 		startPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
